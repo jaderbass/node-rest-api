@@ -9,8 +9,10 @@ const router = (app) => {
     root: 'public',
   }
 
+  // Das 'public'-Verzeichnis für statische Dateien bereitstellen
   app.use(express.static(path.join(process.cwd(), "public")));
 
+  // EJS als View-Engine konfigurieren
   app.set('view engine', 'ejs');
   app.set('views', path.join('views'));
 
@@ -49,6 +51,8 @@ const router = (app) => {
     console.log(data);
     pool.query("INSERT INTO tbl_users (users_name, users_password) VALUES (?, ?)", [data.users_name, data.users_password], (error, result) => {
       if (error) throw error;
+      // ? Flash success: Bestätigungsnachricht nach Anlage
+      req.flash('success', `Benutzer ${data.users_name} wurde angelegt`);
       res.redirect('/users');
     });
   });
@@ -56,13 +60,27 @@ const router = (app) => {
   // Benutzer löschen
   app.delete('/users/:id', (req, res) => {
     const id = req.params.id;
-    pool.query("DELETE FROM tbl_users WHERE users_id = ?", [id], (error, result) => {
-      if (error) {
-        console.error('DELETE query error:', error);
-        return res.status(500).json({ ok: false, error: error.message });
+    // Name ermitteln, damit wir ihn in der Nachricht verwenden können
+    pool.query("SELECT users_name FROM tbl_users WHERE users_id = ?", [id], (err, rows) => {
+      if (err) {
+        console.error('SELECT before DELETE error:', err);
+        // ? Flash error: Fehler beim Auslesen vor Löschversuch
+        req.flash('error', 'Fehler beim Löschen des Benutzers');
+        return res.redirect('/users');
       }
-      // Zurück zum Benutzer-Übersichtsseite
-      res.redirect('/users');
+      const name = rows && rows[0] ? rows[0].users_name : id;
+      pool.query("DELETE FROM tbl_users WHERE users_id = ?", [id], (error, result) => {
+        if (error) {
+          console.error('DELETE query error:', error);
+          // ? Flash error: Löschvorgang fehlgeschlagen
+          req.flash('error', 'Fehler beim Löschen des Benutzers');
+          return res.redirect('/users');
+        }
+        // ? Flash success: Bestätigungsnachricht nach Löschung
+        req.flash('success', `Benutzer ${name} wurde gelöscht`);
+        // Zurück zum Benutzer-Übersichtsseite
+        res.redirect('/users');
+      });
     });
   });
 
@@ -73,6 +91,8 @@ const router = (app) => {
     console.log(data);
     pool.query("UPDATE tbl_users SET users_name = ?, users_password = ? WHERE users_id = ?", [data.users_name, data.users_password, id], (error, result) => {
       if (error) throw error;
+      // ? Flash success: Bestätigungsnachricht nach Aktualisierung
+      req.flash('success', `Benutzer ${data.users_name} wurde aktualisiert`);
       // Zurück zum Benutzer-Übersichtsseite
       res.redirect('/users');
     });

@@ -1,0 +1,49 @@
+/* Global styles for flash messages and basic layout */
+:root{
+  --success-bg: #ecfdf5;
+  --success-border: #10b981;
+  --success-text: #065f46;
+  --error-bg: #fff1f2;
+  --error-border: #ef4444;
+  --error-text: #7f1d1d;
+  --muted: #6b7280;
+  --max-width: 900px;
+}
+
+body{
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  line-height: 1.45;
+  padding: 24px;
+  color: #111827;
+}
+
+.container{
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+
+.flash{
+  padding: 12px 16px;
+  margin: 12px 0;
+  border-radius: 6px;
+  font-weight: 600;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.02);
+}
+
+.flash.success{
+  background: var(--success-bg);
+  color: var(--success-text);
+  border-left: 4px solid var(--success-border);
+}
+
+.flash.error{
+  background: var(--error-bg);
+  color: var(--error-text);
+  border-left: 4px solid var(--error-border);
+}
+
+/* Small nicety for lists */
+ul{ padding-left: 18px; }
+li{ margin: 8px 0; }
+
+button{ cursor: pointer; }

@@ -5,9 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><%= title %></title>
   <link rel="icon" href="/favicon.ico">
+  <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
   <h1><%= heading %></h1>
+
+  <!-- ? Flash success: Anzeige der Erfolgsmeldung oben auf der Seite -->
+  <% if (success && success.length) { %>
+    <div class="flash success"><%= success[0] %></div>
+  <% } %>
+  <!-- ? Flash error: Anzeige der Fehlermeldung oben auf der Seite -->
+  <% if (error && error.length) { %>
+    <div class="flash error"><%= error[0] %></div>
+  <% } %>
 
   <ul>
     <% users.forEach( function(user) { %>

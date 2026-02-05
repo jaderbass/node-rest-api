@@ -6,6 +6,8 @@ import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 import helmet from 'helmet';
 import methodOverride from 'method-override';
+import session from 'express-session';
+import flash from 'connect-flash';
 import router from './routes/router.js';
 
 dotenv.config();
@@ -60,6 +62,21 @@ app.use(methodOverride((req, res) => {
 // Debug-Logging für eingehende Requests (Methode, URL, Body)
 app.use((req, res, next) => {
   console.log('REQ', req.method, req.url, 'body:', req.body);
+  next();
+});
+
+// ? Session für Flash-Messages (erforderlich für persistente Flash-Nachrichten via connect-flash)
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'devsecret',
+  resave: false,
+  saveUninitialized: false,
+}));
+// ? connect-flash Middleware (stellt req.flash bereit)
+app.use(flash());
+// ? Expose flash messages to templates as `success` / `error` (verfügbar in res.locals)
+app.use((req, res, next) => {
+  res.locals.success = req.flash('success');
+  res.locals.error = req.flash('error');
   next();
 });
 
