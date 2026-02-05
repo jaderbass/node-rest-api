@@ -4,13 +4,20 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><%= title %></title>
+  <link rel="icon" href="/favicon.ico">
 </head>
 <body>
   <h1><%= heading %></h1>
 
   <ul>
     <% users.forEach( function(user) { %>
-      <li><a href="/users/<%= user.users_id %>"><%= user.users_name %></a></li>
+      <li>
+        <a href="/users/<%= user.users_id %>"><%= user.users_name %></a>
+        <form action="/users/<%= user.users_id %>" method="post">
+          <input type="hidden" name="_method" value="DELETE">
+          <button type="submit">Löschen</button>
+        </form>
+      </li>
     <% }); %>
   </ul>
 </body>
