@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>
+    <%= title %>
+  </title>
+  <link rel="icon" href="../public/favicon.ico">
+</head>
+
+<body>
+  <h1>
+    <%= heading %>
+  </h1>
+
+  <form action="http://localhost:3002/users/<%= user[0].users_id %>" method="post">
+    <input type="hidden" name="_method" value="PUT">
+    <div>
+      <label for="username">Benutzername:</label><br>
+      <input type="text" id="username" name="users_name" value="<%= user[0].users_name %>" required>
+    </div>
+    <div>
+      <label for="password">Passwort:</label><br>
+      <input type="password" id="password" name="users_password" value="<%= user[0].users_password %>" required>
+    </div>
+    <p>Der Benutzer wurde am <%= user[0].users_registered %> angelegt.<br>
+    Letzter Login: <%= user[0].users_last_login %>.</p>
+    <input type="submit" value="Benutzer aktualisieren">
+  </form>
+</body>
+
+</html>

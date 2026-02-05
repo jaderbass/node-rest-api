@@ -29,13 +29,13 @@ const router = (app) => {
     });
   });
 
-  // einzelnen User ausgeben
+  // einzelnen User ausgeben und ändern
   app.get('/users/:id', (req, res) => {
     const id = req.params.id;
     pool.query("SELECT * FROM tbl_users WHERE users_id = ?", id, (error, result) => {
       console.log(result);
       if (error) throw error;
-      res.render('users-detail', {
+      res.render('update-user', {
         title: 'Benutzer-Details',
         heading: 'Benutzer-Details',
         user: result,
@@ -61,6 +61,18 @@ const router = (app) => {
         console.error('DELETE query error:', error);
         return res.status(500).json({ ok: false, error: error.message });
       }
+      // Zurück zum Benutzer-Übersichtsseite
+      res.redirect('/users');
+    });
+  });
+
+  // Benutzer aktualisieren
+  app.put('/users/:id', (req, res) => {
+    const id = req.params.id;
+    const data = req.body;
+    console.log(data);
+    pool.query("UPDATE tbl_users SET users_name = ?, users_password = ? WHERE users_id = ?", [data.users_name, data.users_password, id], (error, result) => {
+      if (error) throw error;
       // Zurück zum Benutzer-Übersichtsseite
       res.redirect('/users');
     });
