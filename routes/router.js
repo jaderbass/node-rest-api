@@ -1,19 +1,8 @@
 "use strict";
 
+import pool from '../data/config.js';
 import express from 'express';
-
-const users = [
-  {
-    id: 1,
-    name: "Richard Hendricks",
-    email: "richard@piedpiper.com",
-  },
-  {
-    id: 2,
-    name: "Bertram Gilfoyle",
-    email: 'gilfoyle@piedpiper.com'
-  }
-];
+import path from 'path';
 
 const router = (app) => {
   const options = {
@@ -22,8 +11,21 @@ const router = (app) => {
 
   app.use(express.static('public'));
 
+  app.set('view engine', 'ejs');
+  app.set('views', path.join('views'));
+
   app.get('/users', (req, res) => {
-    res.send(users);
+    pool.query("SELECT * FROM tbl_users", (error, result) => {
+      if(error) throw error;
+
+      console.log(result);
+
+      res.render('all-users', {
+        title: 'Benutzer-Dashboard',
+        heading: 'Benutzer Dashboard',
+        users: result,
+      });
+    });
   });
 }
 
